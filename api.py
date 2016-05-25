@@ -163,7 +163,7 @@ class RockPaperScissorsApi(remote.Service):
 
         games = Game.query(ndb.AND(Game.game_over == False, \
                 ndb.OR(Game.user_one == user.key, Game.user_two == user.key)))
-        return GameForms(items=[game.to_form(msg) for game in games])
+        return GameForms(items=[game.to_form('') for game in games])
 
     @endpoints.method(request_message=CANCEL_GAME_REQUEST,
                       response_message=GameForm,
@@ -189,9 +189,9 @@ class RockPaperScissorsApi(remote.Service):
     
     @endpoints.method(request_message=SELECT_WEAPON_REQUEST,
                       response_message = GameForm,
-                      path = 'game/{urlsafe_game_key}/select_weapon',
+                      path = 'game/select_weapon',
                       name = 'select_weapon',
-                      http_method = 'POST')
+                      http_method = 'PUT')
     def select_weapon(self, request):
         """User selects the weapon and the game is updated"""
         game = get_by_urlsafe(request.urlsafe_key, Game)

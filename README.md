@@ -51,7 +51,7 @@ winner is declared.
       raised if user is not present in the database.
     
  - **get_all_games**
-    - Path: 'game/{urlsafe_game_key}'
+    - Path: 'game/get_all'
     - Method: GET
     - Parameters: none
     - Returns: GameForms with game states.
@@ -76,14 +76,14 @@ winner is declared.
       NotFoundException is raised if the user is not registered.
     
  - **cancel_game**
-    - Path: 'game/{urlsafe_game_key}/history'
+    - Path: 'game/{urlsafe_game_key}/cancel'
     - Method: POST
     - Parameters: urlsafe_game_key
     - Returns: GameForm
     - Description: Cancels the selected game. NotFoundException is raised if game not found.
       BadRequestException is raised if the user tries to cancel a game that is already completed.
 
-- **cancel_game**
+- **get_user_stats**
     - Path: 'user_stats'
     - Method: GET
     - Parameters: none
@@ -91,9 +91,9 @@ winner is declared.
     - Description: Returns the cached wins, losses and win ratio for every user in a string message.
 
 - **select_weapon**
-    - Path: 'game/{urlsafe_game_key}/select_weapon'
-    - Method: POST
-    - Parameters: urlsafe_game_key, user_name and weapon
+    - Path: 'game/select_weapon'
+    - Method: PUT
+    - Parameters: urlsafe_key, user_name and weapon
     - Returns: GameForm
     - Description: Allows user to select the weapon for the particular game. 
       NotFoundException is raised if game or user not found.
