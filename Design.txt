@@ -1,0 +1,17 @@
+Design Desisions
+
+1. What additional properties did you add to your models and why?
+  * User 
+    * Added wins and losses fields to keep track of the number of wins and update the ranking. By default the value is 0 for both the fields
+  * Game
+    * user_one and user_two - There are two key properties because there will be two users who will be playing this game
+    * player_one_weapons and player_two weapons - These two properties correspond to the weapons choseb by the respective users. The properties are accessed in the code as list as each game can have more than one weapons chosen that depends on the total number of rounds in each game. These lists also help in effectively outputting each player's moves when game history is queried
+    * game_result - This is a string property and stores the current result for the game. 
+    * game_cancelled - Boolean propery added to track a game that has been cancelled by the user
+    * total_rounds - Integer property added to store the total rounds that each user needs to play to 
+    finish the game
+
+
+2. What were some of the trade-offs or struggles you faced when implementing the new game logic?
+    * I tried to keep the data models very simple and didn't use a lot of complex attributes which could have helped in faster query time. Also the ranking algorithm is very crude as everytime ranking is asked for, we go through the whole list of users. Game logic is simple and has been captured from wikipedia. 
+ 
