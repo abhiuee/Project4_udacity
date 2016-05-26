@@ -1,8 +1,6 @@
 """models.py - This file contains the class definitions for the Datastore
 entities used by the Rock, Paper, Scissors game."""
 
-import random
-from datetime import date
 from protorpc import messages
 from google.appengine.ext import ndb
 
@@ -14,6 +12,20 @@ class User(ndb.Model):
     email =ndb.StringProperty()
     wins = ndb.IntegerProperty(default = 0)
     losses = ndb.IntegerProperty(default = 0)
+    win_ratio = ndb.FloatProperty(default = 0.0)
+
+    @classmethod
+    def order_by_ranking(cls):
+        """Returns list of users in order of the ranking"""
+        return cls.query().order(-cls.win_ratio).order(cls.losses)
+
+    def update_win_ratio(self):
+        """Function to update the win ratio for the user"""
+        if self.losses + self.wins == 0:
+            self.win_ratio = 0.0
+        else:
+            self.win_ratio = float(self.wins)/(self.wins+self.losses)
+
 
 
 class Game(ndb.Model):
@@ -79,6 +91,8 @@ class Game(ndb.Model):
                                         .format(u2.name,num_wins_player_2,num_wins_player_1)
                     u2.wins = u2.wins + 1
                     u1.losses  = u1.losses + 1
+                    u1.update_win_ratio()
+                    u2.update_win_ratio()
                     u1.put()
                     u2.put()
                 elif num_wins_player_1 > num_wins_player_2:
@@ -86,6 +100,8 @@ class Game(ndb.Model):
                                         format(u1.name,num_wins_player_1,num_wins_player_2)
                     u1.wins = u1.wins + 1
                     u2.losses  = u2.losses + 1
+                    u1.update_win_ratio()
+                    u2.update_win_ratio()
                     u1.put()
                     u2.put()
                 else:

@@ -3,7 +3,6 @@
 API exposing the resources.
 This file includes all of the game’s logic."""
 
-import logging
 import endpoints
 from protorpc import remote, messages
 from google.appengine.api import memcache
@@ -50,12 +49,28 @@ class RockPaperScissorsApi(remote.Service):
         return StringMessage(message='User {} created!'.format(
             request.user_name))
 
+    @endpoints.method(response_message= StringMessage,
+                      path='user/rankings',
+                      name = 'user_rankings',
+                      http_method = 'GET')
+    def get_user_rankings(self, request):
+        """Return list of users sorted by their ranking"""
+        # Query the users in order of the ranking
+        users = User.order_by_ranking()
+        msg = ''
+        rank = 1
+        for p in users:
+            msg += "User {} Win Ratio {} Rank {}. " \
+                    .format(p.name, p.win_ratio, rank)
+            rank = rank+1
+        return StringMessage(message = msg)
+
     @endpoints.method(request_message= USER_RANK_REQUEST,
                       response_message= StringMessage,
                       path='user/ranking',
                       name = 'user_ranking',
                       http_method = 'GET')
-    def get_user_rankings(self, request):
+    def get_user_ranking(self, request):
         """Inefficient way to find ranking, for the user request
         find the user and then compare win ratio with other users
         if win ratio is equal, compare the number of losses"""
@@ -66,26 +81,19 @@ class RockPaperScissorsApi(remote.Service):
         users = User.query(User.name != request.user_name)
         losses = user.losses
         wins = user.wins
-        if (losses + wins) == 0:
-            win_percent = 0.0
-        else:
-            win_percent = float(wins)/(losses + wins)
+        win_ratio = user.win_ratio
         ranking = 0
         total_users = 1
         for other_user in users:
             total_users = total_users + 1
-            if (other_user.losses + other_user.wins) == 0:
-                other_user_win_percent = 0.0
-            else:
-                other_user_win_percent = float(other_user.wins)/(other_user.wins+other_user.losses)
-            if other_user_win_percent < win_percent:
+            if other_user.win_ratio < win_ratio:
                 ranking = ranking - 1
-            elif other_user_win_percent == win_percent:
+            elif other_user.win_ratio == win_ratio:
                 if other_user.losses >= losses:
                     ranking = ranking - 1
         ranking = total_users + ranking
         #Create a ranking message
-        msg = "User {} Ranking {} Win Ratio {}".format(user.name, ranking, win_percent)
+        msg = "User {} Ranking {} Win Ratio {}".format(user.name, ranking, win_ratio)
         return StringMessage(message = msg)
 
     @endpoints.method(request_message=NEW_GAME_REQUEST,
@@ -169,7 +177,7 @@ class RockPaperScissorsApi(remote.Service):
                       response_message=GameForm,
                       path='game/{urlsafe_game_key}/cancel',
                       name='cancel_game',
-                      http_method='POST')
+                      http_method='PUT')
     def cancel_game(self, request):
         """Cancel the game requested by user.
         Completed games will not be cancelled"""
@@ -183,7 +191,7 @@ class RockPaperScissorsApi(remote.Service):
         
         game.game_cancelled = True            
         game.game_over = True
-        game.game_result = 'unknown'
+        game.game_result = 'cancelled'
         game.put()
         return game.to_form("Game Successfully Cancelled!")
     
