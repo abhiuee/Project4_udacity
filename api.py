@@ -51,7 +51,7 @@ class RockPaperScissorsApi(remote.Service):
 
     @endpoints.method(response_message= StringMessage,
                       path='user/rankings',
-                      name = 'user_rankings',
+                      name = 'get_user_rankings',
                       http_method = 'GET')
     def get_user_rankings(self, request):
         """Return list of users sorted by their ranking"""
@@ -68,7 +68,7 @@ class RockPaperScissorsApi(remote.Service):
     @endpoints.method(request_message= USER_RANK_REQUEST,
                       response_message= StringMessage,
                       path='user/ranking',
-                      name = 'user_ranking',
+                      name = 'get_user_ranking',
                       http_method = 'GET')
     def get_user_ranking(self, request):
         """Inefficient way to find ranking, for the user request
@@ -265,10 +265,7 @@ class RockPaperScissorsApi(remote.Service):
         for user in users:
             wins = user.wins
             losses = user.losses
-            if wins + losses == 0:
-                win_percent = 0.0
-            else:
-                win_percent = float(wins)/(wins+losses)
+            win_percent = user.win_ratio
             one_player = "{} {} {} {} {} Win Ratio {} " \
                 .format(user.name,
                         wins,

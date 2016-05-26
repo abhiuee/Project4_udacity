@@ -51,7 +51,7 @@ number of losses is given priority.
       NotFoundException is raised if either users are not present in the database.
       Also adds a task to a task queue to update the user_stats.
 
-- **get_user_ranking**
+ - **get_user_ranking**
     - Path: 'user/ranking'
     - Method: GET
     - Parameters: user_name
@@ -101,14 +101,14 @@ number of losses is given priority.
     - Description: Cancels the selected game. NotFoundException is raised if game not found.
       BadRequestException is raised if the user tries to cancel a game that is already completed.
 
-- **get_user_stats**
+ - **get_user_stats**
     - Path: 'user_stats'
     - Method: GET
     - Parameters: none
     - Returns: StringMessage
     - Description: Returns the cached wins, losses and win ratio for every user in a string message.
 
-- **select_weapon**
+ - **select_weapon**
     - Path: 'game/select_weapon'
     - Method: PUT
     - Parameters: urlsafe_key, user_name and weapon
