@@ -14,7 +14,9 @@ The game is called Rock Paper Scissors. This game is to be played between two pl
 game, you need to provide two registered user names and optionally provide the total number of rounds
 you intend to play (by default only 1 round is played). The logic is simple, each player selects the 
 weapons he/she wants to use in each round. Once both the players select weapons for every round, the 
-winner is declared. 
+winner is declared. The logic is a player who decides to play rock will beat another player who has 
+chosen scissors ("rock crushes scissors") but will lose to one who has played paper ("paper covers rock"); 
+a play of paper will lose to a play of scissors ("scissors cut paper")
 
 ##Score Keeping:
 Each game is played between two users. When the game starts the status of the game is incomplete and unknown. Once both the users, play all the rounds, winner is selected based on the logic of the game.
